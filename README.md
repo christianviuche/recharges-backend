@@ -48,7 +48,6 @@ npm run start:prod
 
 ```bash
 npm run test
-npm run test:e2e
 ```
 
 ## Arquitectura por capas
