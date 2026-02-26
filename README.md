@@ -89,6 +89,9 @@ Ubicacion: `src/infrastructure/**`
 - `POST /recharges/buy` compra recarga (protegido con JWT).
 - `GET /recharges/history` consulta historial (protegido con JWT).
 
+### Flujo de Compra de Recarga
+<img width="3348" height="1418" alt="recharge_buy" src="https://github.com/user-attachments/assets/ec180005-5ba6-40b9-b3cb-db6da49ef344" />
+
 ## Librerias utilizadas (explicacion breve)
 
 - **@nestjs/common**: decoradores, inyeccion de dependencias y utilidades base del framework.
