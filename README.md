@@ -1,98 +1,145 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# Recharges Backend
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+API para compra de recargas y consulta de historial. Proyecto enfocado en arquitectura limpia, validaciones de dominio y persistencia con PostgreSQL.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## Instrucciones de ejecucion
 
-## Description
+### Requisitos
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+- Node.js 18+ (recomendado)
+- PostgreSQL 13+ (o Docker)
 
-## Project setup
+### Variables de entorno
 
-```bash
-$ npm install
+Cree un archivo `.env` con una de estas opciones:
+
+**Opcion A: DATABASE_URL**
+
+```
+DATABASE_URL=postgres://usuario:password@localhost:5432/recharges_db
+JWT_SECRET=tu_secreto
 ```
 
-## Compile and run the project
+**Opcion B: parametros separados**
 
-```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+```
+DB_HOST=localhost
+DB_PORT=5432
+DB_USER=postgres
+DB_PASSWORD=root
+DB_NAME=recharges_db
+JWT_SECRET=tu_secreto
 ```
 
-## Run tests
+### Instalacion y ejecucion
 
 ```bash
-# unit tests
-$ npm run test
+npm install
 
-# e2e tests
-$ npm run test:e2e
+# desarrollo
+npm run start:dev
 
-# test coverage
-$ npm run test:cov
+# produccion
+npm run build
+npm run start:prod
 ```
 
-## Deployment
-
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+### Tests
 
 ```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
+npm run test
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+## Arquitectura por capas
 
-## Resources
+### Domain
 
-Check out a few resources that may come in handy when working with NestJS:
+Contiene las reglas de negocio puras, sin dependencias de frameworks:
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+- **Entities**: `Recharge`, `User` representan el modelo de dominio.
+- **Value Objects**: `Amount`, `PhoneNumber` encapsulan validaciones y evitan estados invalidos.
+- **Exceptions**: `AmountException`, `PhoneNumberInvalidException` para errores de dominio.
 
-## Support
+Ubicacion: `src/domain/**`
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+### Application
 
-## Stay in touch
+Coordina la logica de negocio y define contratos:
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+- **Use Cases**: `BuyRechargeUseCase`, `GetRechargeHistoryUseCase`, `LoginUseCase`.
+- **Interfaces**: `IRechargeRepository`, `IUserRepository`, `ITokenService` para inversion de dependencias.
 
-## License
+Ubicacion: `src/application/**`
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+### Infrastructure
+
+Implementa detalles tecnicos y adaptadores externos:
+
+- **Controllers**: `AuthController`, `RechargeController` manejan HTTP.
+- **DTOs**: `LoginDto`, `BuyRechargeDto` validan entrada con class-validator.
+- **Auth**: `JwtStrategy` y `JwtTokenService` implementan autenticacion.
+- **Persistence**: `RechargeOrmRepository`, `UserInMemoryRepository`, `TransactionModel`.
+
+Ubicacion: `src/infrastructure/**`
+
+## Endpoints principales
+
+- `POST /auth/login` genera JWT.
+- `POST /recharges/buy` compra recarga (protegido con JWT).
+- `GET /recharges/history` consulta historial (protegido con JWT).
+
+### Flujo de Compra de Recarga
+<img width="3348" height="1418" alt="recharge_buy" src="https://github.com/user-attachments/assets/ec180005-5ba6-40b9-b3cb-db6da49ef344" />
+
+## Librerias utilizadas (explicacion breve)
+
+- **@nestjs/common**: decoradores, inyeccion de dependencias y utilidades base del framework.
+- **@nestjs/core**: motor principal de NestJS (bootstrap, ciclo de vida).
+- **@nestjs/platform-express**: adaptador HTTP basado en Express.
+- **@nestjs/config**: carga de variables de entorno y configuracion centralizada.
+- **@nestjs/jwt**: emision y verificacion de JWT.
+- **@nestjs/passport**: integracion de Passport con NestJS.
+- **passport**: middleware de autenticacion extensible.
+- **passport-jwt**: estrategia JWT para Passport.
+- **@nestjs/typeorm**: integracion oficial de TypeORM con NestJS.
+- **typeorm**: ORM para mapear entidades y repositorios a PostgreSQL.
+- **pg**: driver de PostgreSQL.
+- **class-validator**: validacion declarativa de DTOs con decoradores.
+- **class-transformer**: transforma payloads a instancias de clases.
+- **rxjs**: soporte de flujos reactivos requerido por NestJS.
+- **reflect-metadata**: habilita metadata para decoradores de TypeScript.
+
+## Justificacion breve de decisiones tecnicas
+
+- **Arquitectura limpia + DDD**: decidi separar dominio, aplicacion e infraestructura porque pensaba que asi el core quedaria mas claro y facil de probar. Ademas, DDD me ayuda a modelar el negocio con entidades y value objects, sin mezclar detalles de HTTP o BD.
+- **SOLID e inversion de dependencias (DIP)**: preferi que los use cases dependan de interfaces (`IRechargeRepository`, `IUserRepository`, `ITokenService`) porque crei que era la forma correcta de desacoplar la logica. Esto permite mocks en pruebas y cambiar la infraestructura sin tocar el dominio.
+- **Inyeccion de dependencias (DI)**: use el contenedor de NestJS para inyectar repositorios y servicios, evitando `new` directos. Asi el codigo queda mas flexible y alineado con SOLID.
+- **Entidades de dominio**: `Recharge` es el concepto central (monto, numero, usuario, fecha). `User` lo mantuve como entidad aunque tenga poca logica ahora porque en el flujo de autenticacion viaja su identidad, y pense que era mejor dejarlo en el dominio por si luego se agregan reglas (roles, limites, estados).
+- **Value Objects**: `Amount` y `PhoneNumber` encapsulan reglas de negocio. Lo hice asi porque creia que la validacion no debia vivir solo en el DTO, sino tambien en el dominio para asegurar consistencia.
+- **JWT**: elegi JWT porque es stateless y sencillo para una API, y evita manejo de sesiones en servidor.
+- **TypeORM**: lo use para reducir codigo de persistencia, mantener el mapeo con PostgreSQL y tener repositorios claros.
+
+## Deployment en Render
+
+URL publica: https://recharges-backend.onrender.com
+
+### Paso a paso
+
+1. **Crear la base de datos**
+	- En Render, crear un servicio de PostgreSQL.
+	- Copiar el `DATABASE_URL` generado.
+
+2. **Crear el servicio web**
+	- Conectar el repositorio de GitHub.
+	- Seleccionar el branch principal.
+	- Definir build y start commands:
+	  - Build: `npm install && npm run build`
+	  - Start: `npm run start:prod`
+
+3. **Configurar variables de entorno**
+	- `DATABASE_URL` con el valor del paso 1.
+	- `JWT_SECRET` con un secreto seguro.
+
+4. **Desplegar**
+	- Render ejecuta el build y levanta el servicio.
+	- Verificar que el endpoint responde en la URL publicada.
